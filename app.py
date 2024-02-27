@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from fugashi import Tagger
 from waitress import serve
 
+from load_env import API_KEY
 from type import *
 
 app = Flask(__name__)
@@ -17,6 +18,14 @@ def index():
 
 @app.route("/tokenize", methods=["POST"])
 def tokenize():
+    token = request.headers.get("Authorization")
+    if token != API_KEY:
+        return jsonify({"error": "unauthorized"}), 401
+    if request.method != "POST":
+        return jsonify({"error": "Invalid request method"}), 405
+    if not request.is_json:
+        return jsonify({"error": "Request is not JSON"}), 400
+
     data = request.get_json()
     lyrics: Lyrics = data.get("lyrics")
     app.logger.info(f"Received lyrics: {lyrics}")
