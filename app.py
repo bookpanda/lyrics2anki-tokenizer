@@ -1,6 +1,7 @@
 import logging
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from fugashi import Tagger
 from waitress import serve
 
@@ -8,6 +9,7 @@ from load_env import API_KEY
 from type import *
 
 app = Flask(__name__)
+CORS(app)
 logging.basicConfig(level=logging.INFO)
 
 
