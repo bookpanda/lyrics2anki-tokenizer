@@ -18,7 +18,10 @@ def index():
 
 @app.route("/tokenize", methods=["POST"])
 def tokenize():
-    token = request.headers.get("Authorization")
+    authHeader = request.headers.get("Authorization")
+    if not authHeader:
+        return jsonify({"error": "unauthorized"}), 401
+    token = authHeader.split(" ")[1]
     if token != API_KEY:
         return jsonify({"error": "unauthorized"}), 401
     if request.method != "POST":
